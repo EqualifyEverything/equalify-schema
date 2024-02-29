@@ -2,7 +2,7 @@
 Standardize Results from Automated Testing Providers
 
 ## Problem
-Automated tests give results in lots of different formats. This requires solutions, like [Testaro]([url](https://github.com/cvs-health/testaro?tab=readme-ov-file#standard-format)https://github.com/cvs-health/testaro?tab=readme-ov-file#standard-format) and [Equalify](https://github.com/equalifyEverything/equalify), to do a lot of work in reformatting before they carry out a task.
+Automated tests give results in lots of different formats. This requires solutions, like [Testaro](https://github.com/cvs-health/testaro) and [Equalify](https://github.com/equalifyEverything/equalify), to do a lot of work in reformatting before they carry out a task.
 
 ## Solution
 The Equalify Formatter is a web service to format the results of any automated accessibility scan. We take in results from a scan, then output formatted results. In doing so we aim to accomplish three goals:
