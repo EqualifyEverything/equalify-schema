@@ -1,0 +1,45 @@
+{
+    "scan": "axe",
+    "input": [
+        {
+            "result": {
+                "results": {
+                    "url": "https://make.wordpress.org/docs/",
+                    "violations": [
+                        {
+                            "id": "button-name",
+                            "description": "Ensures buttons have discernible text",
+                            "help": "Buttons must have discernible text",
+                            "helpUrl": "https://dequeuniversity.com/rules/axe/4.8/button-name?application=axe-puppeteer",        
+                            "tags": [
+                                "cat.name-role-value",
+                                "wcag2aa",
+                                "wcag412"
+                            ]
+                        },
+                        {
+                            "id": "color-contrast",
+                            "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+                            "help": "Elements must meet minimum color contrast ratio thresholds",
+                            "helpUrl": "https://dequeuniversity.com/rules/axe/4.8/color-contrast?application=axe-puppeteer",        
+                            "tags": [
+                                "wcag2aa"
+                            ]        
+                        }
+    
+                    ]
+                },
+                "jobID": "188462"
+            }
+        },
+        {
+            "result": {
+                "results": {
+                    "timestamp": "2024-02-27T19:52:17.495Z",
+                    "url": "https://example.com"
+                },
+                "jobID": "188462"
+            }
+        }
+    ]
+}
