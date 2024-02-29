@@ -51,11 +51,10 @@ def process_wave_results(scan_results):
 @app.route('/process_scan', methods=['POST'])
 def process_scan():
     data = request.json
-    scan_id = data.get('scanId')
+    scan_type = data.get('scan', '').lower()  # Adjusted to use 'scan' instead of 'scanType'
     scan_results = data.get('results')
-    scan_type = data.get('scanType', '').lower()
 
-    if scan_type == 'axe-core':
+    if scan_type == 'axe':
         processed_results = process_axe_core_results(scan_results)
     elif scan_type == 'wave':
         processed_results = process_wave_results(scan_results)
@@ -63,8 +62,8 @@ def process_scan():
         return jsonify({'error': 'Unsupported scan type'}), 400
 
     return jsonify({
-        'scanId': scan_id,
-        'processedResults': processed_results
+        'scanId': scan_type,  # Assuming you want to return the scan type as an identifier
+        'messages': processed_results  # Wrapping results within a 'messages' key
     })
 
 if __name__ == '__main__':
