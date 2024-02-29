@@ -77,3 +77,35 @@ We hope to add other scans!
 Documentation and code in this repo should provide the basis for including any scan.
 
 Please create a pull request with any additional scan you want.
+
+## Running the Equalify Formatter Web Service
+
+### Prerequisites
+Python 3.x
+Flask
+You can install Flask using pip if you haven't already:
+
+```bash
+pip install Flask
+Starting the Service
+To start the Equalify Formatter web service, navigate to the directory containing app.py and run the following command in your terminal:
+```
+
+```bash
+python app.py
+```
+
+This command starts a local development server, typically accessible at http://127.0.0.1:5000/.
+
+### Sending a Request
+You can test the service by sending a POST request to `http://127.0.0.1:5000/process_scan` with a JSON payload corresponding to the scan results you wish to process. Here is an example using curl:
+
+```bash
+curl -X POST http://127.0.0.1:5000/process_scan \
+-H "Content-Type: application/json" \
+-d '{"scan": "axe", "results": [your_scan_results_here]}'
+```
+Replace [your_scan_results_here] with the actual results from your accessibility scan.
+
+### Reporting Errors
+Add a pull request noting any errors.
