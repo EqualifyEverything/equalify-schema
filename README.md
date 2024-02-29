@@ -7,8 +7,8 @@ Automated tests give results in lots of different formats. This requires solutio
 ## Solution
 The Equalify Formatter is a web service to format the results of any automated accessibility scan. We take in results from a scan, then output formatted results. In doing so we aim to accomplish three goals:
 1) Retain all information that's useful to fix reported violations.
-2) Support all automated scans
-3) Deliver results efficiently
+2) Support all automated web accessibility scans.
+3) Deliver results efficiently.
 
 ## Sample Input
 ```json
