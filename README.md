@@ -10,6 +10,9 @@ The Equalify Formatter is a web service to format the results of any automated a
 2) Support all automated web accessibility scans.
 3) Deliver results efficiently.
 
+## Larger Goal
+We're building this project for universal adoption by scanning services. We really need a uniform automated scan result format. A universal format will minimize the duplicate work we're all doing.
+
 ## Sample Input
 ```json
 {
