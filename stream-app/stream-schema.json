@@ -19,7 +19,7 @@
             },
             "relatedPageIds": {
               "type": "array",
-              "items": { "type": "string" }
+              "items": { "type": "integer" }
             }
           },
           "required": ["message", "relatedTagIds", "relatedCodeSnippetIds", "relatedPageIds"]
@@ -30,7 +30,7 @@
         "items": {
           "type": "object",
           "properties": {
-            "tagId": { "type": "string" },
+            "tagId": { "type": "integer" },
             "tagName": { "type": "string" }
           },
           "required": ["tagId", "tagName"]
@@ -41,11 +41,10 @@
         "items": {
           "type": "object",
           "properties": {
-            "codeSnippetId": { "type": "string" },
-            "codeSnippet": { "type": "string" },
-            "status": { "type": "string" }
+            "codeSnippetId": { "type": "integer" },
+            "codeSnippet": { "type": "string" }
           },
-          "required": ["codeSnippetId", "codeSnippet", "status"]
+          "required": ["codeSnippetId", "codeSnippet"]
         }
       },
       "pages": {
@@ -53,7 +52,7 @@
         "items": {
           "type": "object",
           "properties": {
-            "pageId": { "type": "string" },
+            "pageId": { "type": "integer" },
             "pageUrl": { "type": "string" }
           },
           "required": ["pageId", "pageUrl"]
