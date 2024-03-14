@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "STREAM Schema",
+    "type": "object",
+    "properties": {
+      "messages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string" },
+            "relatedTagIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "relatedCodeSnippetIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "relatedPageIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["message", "relatedTagIds", "relatedCodeSnippetIds", "relatedPageIds"]
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "tagId": { "type": "string" },
+            "tagName": { "type": "string" }
+          },
+          "required": ["tagId", "tagName"]
+        }
+      },
+      "codeSnippets": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "codeSnippetId": { "type": "string" },
+            "codeSnippet": { "type": "string" },
+            "status": { "type": "string" }
+          },
+          "required": ["codeSnippetId", "codeSnippet", "status"]
+        }
+      },
+      "pages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "pageId": { "type": "string" },
+            "pageUrl": { "type": "string" }
+          },
+          "required": ["pageId", "pageUrl"]
+        }
+      }
+    },
+    "required": ["messages", "tags", "codeSnippets", "pages"]
+}  
