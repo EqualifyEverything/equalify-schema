@@ -1,7 +1,7 @@
 const STATUSES = {
     violations: 1,
     incomplete: 2,
-    passes: 3
+    passes: 3 // Assuming you might also want to handle 'passes' similarly
 };
 
 function convertAxeResultsToStream(axeResults) {
@@ -42,17 +42,15 @@ function convertAxeResultsToStream(axeResults) {
                     codeSnippet: node.html
                 });
 
-                // Check if a message with the same text and status already exists
+                // Find or create a new message entry ensuring integers for IDs
                 let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
                 if (existingMessage) {
-                    // If exists, just add the new codeSnippetId to the existing message
-                    existingMessage.relatedCodeSnippetIds.push(codeSnippetId.toString());
+                    existingMessage.relatedCodeSnippetIds.push(codeSnippetId); // Use integer ID directly
                 } else {
-                    // Otherwise, create a new message entry
                     streamData.messages.push({
                         message: messageText,
-                        relatedTagIds: issueTagIds.map(String),
-                        relatedCodeSnippetIds: [codeSnippetId.toString()],
+                        relatedTagIds: issueTagIds, // Use integer IDs directly
+                        relatedCodeSnippetIds: [codeSnippetId], // Use integer ID directly
                         relatedPageIds: [1],
                         relatedStatusId: STATUSES[status]
                     });

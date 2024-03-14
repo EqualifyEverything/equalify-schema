@@ -11,11 +11,11 @@
           "message": { "type": "string" },
           "relatedTagIds": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": { "type": "integer" }
           },
           "relatedCodeSnippetIds": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": { "type": "integer" }
           },
           "relatedPageIds": {
             "type": "array",
