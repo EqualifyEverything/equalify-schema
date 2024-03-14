@@ -1,58 +1,72 @@
+const STATUSES = {
+    violations: 1,
+    incomplete: 2,
+    passes: 3
+};
+
 function convertAxeResultsToStream(axeResults) {
-    let tagIdCounter = 1;
+    let tagIdCounter = 100; // Starting from 100 to differentiate from status IDs
     let codeSnippetIdCounter = 1;
 
     const streamData = {
         messages: [],
         tags: [],
         codeSnippets: [],
-        pages: []
+        pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }],
+        statuses: [
+            { statusId: STATUSES.violations, statusName: 'Violations' },
+            { statusId: STATUSES.incomplete, statusName: 'Incomplete' },
+            { statusId: STATUSES.passes, statusName: 'Passes' }
+        ]
     };
 
-    // Ensure the page URL is correctly extracted and assigned
-    const pageUrl = axeResults.result.results.url;
-    streamData.pages.push({ pageId: 1, pageUrl: pageUrl });
+    // Helper to process and categorize issues
+    const processIssues = (issues, status) => {
+        issues.forEach((issue) => {
+            issue.nodes.forEach(node => {
+                const messageText = `${issue.description} Help: ${issue.help}. More information: ${issue.helpUrl}`;
+                const codeSnippetId = codeSnippetIdCounter++;
+                
+                // Check for an existing tag for this issue, otherwise create a new one
+                const issueTagIds = issue.tags.map(tag => {
+                    let tagEntry = streamData.tags.find(t => t.tagName === tag);
+                    if (!tagEntry) {
+                        tagEntry = { tagId: tagIdCounter++, tagName: tag };
+                        streamData.tags.push(tagEntry);
+                    }
+                    return tagEntry.tagId;
+                });
 
-    // Combine the violations and incomplete issues for processing
-    const issues = [...axeResults.result.results.violations, ...axeResults.result.results.incomplete];
+                streamData.codeSnippets.push({
+                    codeSnippetId: codeSnippetId,
+                    codeSnippet: node.html
+                });
 
-    issues.forEach((issue) => {
-        // Prepare message text including help and more information link
-        const messageText = `${issue.description} Help: ${issue.help}. More information: ${issue.helpUrl}`;
-
-        // Check if a message for this issue already exists
-        let existingMessage = streamData.messages.find(m => m.message === messageText);
-        if (!existingMessage) {
-            // Prepare tags related to this issue
-            const relatedTagIds = issue.tags.map(tag => {
-                let tagEntry = streamData.tags.find(t => t.tagName === tag);
-                if (!tagEntry) {
-                    tagEntry = { tagId: tagIdCounter++, tagName: tag };
-                    streamData.tags.push(tagEntry);
+                // Check if a message with the same text and status already exists
+                let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
+                if (existingMessage) {
+                    // If exists, just add the new codeSnippetId to the existing message
+                    existingMessage.relatedCodeSnippetIds.push(codeSnippetId.toString());
+                } else {
+                    // Otherwise, create a new message entry
+                    streamData.messages.push({
+                        message: messageText,
+                        relatedTagIds: issueTagIds.map(String),
+                        relatedCodeSnippetIds: [codeSnippetId.toString()],
+                        relatedPageIds: [1],
+                        relatedStatusId: STATUSES[status]
+                    });
                 }
-                return tagEntry.tagId;
-            });
-
-            existingMessage = {
-                message: messageText,
-                relatedTagIds: relatedTagIds.map(String), // Convert tag IDs to strings as per schema
-                relatedCodeSnippetIds: [], // This will be populated below
-                relatedPageIds: [1] // Assuming single page context
-            };
-            streamData.messages.push(existingMessage);
-        }
-
-        // Process nodes related to the issue
-        issue.nodes.forEach(node => {
-            const codeSnippetId = codeSnippetIdCounter++;
-            existingMessage.relatedCodeSnippetIds.push(codeSnippetId.toString()); // Update the existing message with new code snippet ID
-
-            streamData.codeSnippets.push({
-                codeSnippetId: codeSnippetId,
-                codeSnippet: node.html
             });
         });
-    });
+    };
+
+    // Process each category of results with its respective status
+    processIssues(axeResults.result.results.violations, 'violations');
+    processIssues(axeResults.result.results.incomplete, 'incomplete');
+    if(axeResults.result.results.passes) {
+        processIssues(axeResults.result.results.passes, 'passes'); // If you're handling passes
+    }
 
     return streamData;
 }

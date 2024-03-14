@@ -1,63 +1,75 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "STREAM Schema",
-    "type": "object",
-    "properties": {
-      "messages": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "message": { "type": "string" },
-            "relatedTagIds": {
-              "type": "array",
-              "items": { "type": "string" }
-            },
-            "relatedCodeSnippetIds": {
-              "type": "array",
-              "items": { "type": "string" }
-            },
-            "relatedPageIds": {
-              "type": "array",
-              "items": { "type": "integer" }
-            }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "STREAM Schema",
+  "type": "object",
+  "properties": {
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "relatedTagIds": {
+            "type": "array",
+            "items": { "type": "string" }
           },
-          "required": ["message", "relatedTagIds", "relatedCodeSnippetIds", "relatedPageIds"]
-        }
-      },
-      "tags": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "tagId": { "type": "integer" },
-            "tagName": { "type": "string" }
+          "relatedCodeSnippetIds": {
+            "type": "array",
+            "items": { "type": "string" }
           },
-          "required": ["tagId", "tagName"]
-        }
-      },
-      "codeSnippets": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "codeSnippetId": { "type": "integer" },
-            "codeSnippet": { "type": "string" }
+          "relatedPageIds": {
+            "type": "array",
+            "items": { "type": "integer" }
           },
-          "required": ["codeSnippetId", "codeSnippet"]
-        }
-      },
-      "pages": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "pageId": { "type": "integer" },
-            "pageUrl": { "type": "string" }
-          },
-          "required": ["pageId", "pageUrl"]
-        }
+          "relatedStatusId": { "type": "integer" }
+        },
+        "required": ["message", "relatedTagIds", "relatedCodeSnippetIds", "relatedPageIds"]
       }
     },
-    "required": ["messages", "tags", "codeSnippets", "pages"]
-}  
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tagId": { "type": "integer" },
+          "tagName": { "type": "string" }
+        },
+        "required": ["tagId", "tagName"]
+      }
+    },
+    "codeSnippets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "codeSnippetId": { "type": "integer" },
+          "codeSnippet": { "type": "string" }
+        },
+        "required": ["codeSnippetId", "codeSnippet"]
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "integer" },
+          "pageUrl": { "type": "string" }
+        },
+        "required": ["pageId", "pageUrl"]
+      }
+    },
+    "statuses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statusId": { "type": "integer" },
+          "statusName": { "type": "string" }
+        },
+        "required": ["statusId", "statusName"]
+      }
+    }
+  },
+  "required": ["messages", "tags", "codeSnippets", "pages", "statuses"]
+}
