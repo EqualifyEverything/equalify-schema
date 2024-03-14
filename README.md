@@ -58,7 +58,7 @@ We invite contributions to refine the STREAM schema and enhance our conversion l
 - New conversion methodologies
 
 ## Support and Maintenance
-STREAM is proudly maintained by [Equalify](http://github.com/equalifyEverything/), an org dedicated to creating community-driven Open Source accessible web tools. 
+STREAM is proudly maintained by [Equalify](http://github.com/equalifyEverything/), a community-drive initiative to build Open Source web accessibility tools. 
 
 **Support Equalify:**
 - Star our [GitHub repo](https://github.com/EqualifyEverything/equalify)
