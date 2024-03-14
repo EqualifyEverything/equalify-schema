@@ -1,6 +1,7 @@
 # Local Development
 .vscode
 .DS_Store
+testing
 
 # Dependency directories
 node_modules/

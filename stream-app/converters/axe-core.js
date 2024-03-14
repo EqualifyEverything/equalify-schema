@@ -6,39 +6,49 @@ function convertAxeResultsToStream(axeResults) {
         messages: [],
         tags: [],
         codeSnippets: [],
-        pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }]
+        pages: []
     };
 
-    axeResults.result.results.violations.forEach((violation) => {
-        // Ensure the impact level is treated as a tag.
-        let impactTagId = streamData.tags.find(t => t.tagName === violation.impact)?.tagId;
-        if (!impactTagId) {
-            impactTagId = tagIdCounter;
-            streamData.tags.push({ tagId: tagIdCounter++, tagName: violation.impact });
-        }
+    // Ensure the page URL is correctly extracted and assigned
+    const pageUrl = axeResults.result.results.url;
+    streamData.pages.push({ pageId: 1, pageUrl: pageUrl });
 
-        const relatedTagIds = violation.tags.map(tag => {
-            let tagEntry = streamData.tags.find(t => t.tagName === tag);
-            if (!tagEntry) {
-                tagEntry = { tagId: tagIdCounter++, tagName: tag };
-                streamData.tags.push(tagEntry);
-            }
-            return tagEntry.tagId;
-        }).concat(impactTagId); // Include the impact tag.
+    // Combine the violations and incomplete issues for processing
+    const issues = [...axeResults.result.results.violations, ...axeResults.result.results.incomplete];
 
-        violation.nodes.forEach(node => {
-            // Include help text and URL inline with the message
-            const messageText = `${violation.description} Help: ${violation.help}. More information: ${violation.helpUrl}`;
+    issues.forEach((issue) => {
+        // Prepare message text including help and more information link
+        const messageText = `${issue.description} Help: ${issue.help}. More information: ${issue.helpUrl}`;
 
-            streamData.messages.push({
-                message: messageText,
-                relatedTagIds: relatedTagIds.map(String), // Ensure IDs are strings as per schema
-                relatedCodeSnippetIds: [codeSnippetIdCounter.toString()],
-                relatedPageIds: [1] // Assuming single page context for simplicity.
+        // Check if a message for this issue already exists
+        let existingMessage = streamData.messages.find(m => m.message === messageText);
+        if (!existingMessage) {
+            // Prepare tags related to this issue
+            const relatedTagIds = issue.tags.map(tag => {
+                let tagEntry = streamData.tags.find(t => t.tagName === tag);
+                if (!tagEntry) {
+                    tagEntry = { tagId: tagIdCounter++, tagName: tag };
+                    streamData.tags.push(tagEntry);
+                }
+                return tagEntry.tagId;
             });
 
+            existingMessage = {
+                message: messageText,
+                relatedTagIds: relatedTagIds.map(String), // Convert tag IDs to strings as per schema
+                relatedCodeSnippetIds: [], // This will be populated below
+                relatedPageIds: [1] // Assuming single page context
+            };
+            streamData.messages.push(existingMessage);
+        }
+
+        // Process nodes related to the issue
+        issue.nodes.forEach(node => {
+            const codeSnippetId = codeSnippetIdCounter++;
+            existingMessage.relatedCodeSnippetIds.push(codeSnippetId.toString()); // Update the existing message with new code snippet ID
+
             streamData.codeSnippets.push({
-                codeSnippetId: codeSnippetIdCounter++,
+                codeSnippetId: codeSnippetId,
                 codeSnippet: node.html
             });
         });
