@@ -1,12 +1,13 @@
 const STATUSES = {
     violations: 1,
     incomplete: 2,
-    passes: 3 // Assuming you might also want to handle 'passes' similarly
+    passes: 3
 };
 
 function convertAxeResultsToStream(axeResults) {
-    let tagIdCounter = 100; // Starting from 100 to differentiate from status IDs
+    let tagIdCounter = 1; 
     let codeSnippetIdCounter = 1;
+    let ruleTagId; // ID for the 'Rule' tag
 
     const streamData = {
         messages: [],
@@ -20,50 +21,68 @@ function convertAxeResultsToStream(axeResults) {
         ]
     };
 
-    // Helper to process and categorize issues
-    const processIssues = (issues, status) => {
-        issues.forEach((issue) => {
-            issue.nodes.forEach(node => {
-                const messageText = `${issue.description} Help: ${issue.help}. More information: ${issue.helpUrl}`;
-                const codeSnippetId = codeSnippetIdCounter++;
-                
-                // Check for an existing tag for this issue, otherwise create a new one
-                const issueTagIds = issue.tags.map(tag => {
-                    let tagEntry = streamData.tags.find(t => t.tagName === tag);
-                    if (!tagEntry) {
-                        tagEntry = { tagId: tagIdCounter++, tagName: tag };
-                        streamData.tags.push(tagEntry);
-                    }
-                    return tagEntry.tagId;
-                });
+    const ensureRuleTag = () => {
+        if (!ruleTagId) {
+            ruleTagId = tagIdCounter++;
+            streamData.tags.push({ tagId: ruleTagId, tagName: 'Rule' });
+        }
+    };
 
+    const formatRuleId = (id) => {
+        return id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
+    const processIssues = (issues, status) => {
+        ensureRuleTag(); 
+
+        issues.forEach((issue) => {
+            const formattedRuleId = formatRuleId(issue.id);
+            const messageText = `${formattedRuleId} Rule: ${issue.description}. ${issue.help}. More information: ${issue.helpUrl}`;
+            
+            // Get tag IDs, including 'Rule' tag
+            const issueTagIds = issue.tags.map(tag => {
+                let tagEntry = streamData.tags.find(t => t.tagName === tag);
+                if (!tagEntry) {
+                    tagEntry = { tagId: tagIdCounter++, tagName: tag };
+                    streamData.tags.push(tagEntry);
+                }
+                return tagEntry.tagId;
+            }).concat(ruleTagId);
+
+            let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
+
+            issue.nodes.forEach(node => {
+                const codeSnippetId = codeSnippetIdCounter++;
                 streamData.codeSnippets.push({
                     codeSnippetId: codeSnippetId,
                     codeSnippet: node.html
                 });
 
-                // Find or create a new message entry ensuring integers for IDs
-                let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
                 if (existingMessage) {
-                    existingMessage.relatedCodeSnippetIds.push(codeSnippetId); // Use integer ID directly
+                    // If the message exists, add new codeSnippetId to it
+                    if (!existingMessage.relatedCodeSnippetIds.includes(codeSnippetId)) {
+                        existingMessage.relatedCodeSnippetIds.push(codeSnippetId);
+                    }
                 } else {
+                    // Create a new message entry
                     streamData.messages.push({
                         message: messageText,
-                        relatedTagIds: issueTagIds, // Use integer IDs directly
-                        relatedCodeSnippetIds: [codeSnippetId], // Use integer ID directly
+                        relatedTagIds: issueTagIds,
+                        relatedCodeSnippetIds: [codeSnippetId],
                         relatedPageIds: [1],
                         relatedStatusId: STATUSES[status]
                     });
+                    // Update the existingMessage reference to the newly added message
+                    existingMessage = streamData.messages[streamData.messages.length - 1];
                 }
             });
         });
     };
 
-    // Process each category of results with its respective status
     processIssues(axeResults.result.results.violations, 'violations');
     processIssues(axeResults.result.results.incomplete, 'incomplete');
-    if(axeResults.result.results.passes) {
-        processIssues(axeResults.result.results.passes, 'passes'); // If you're handling passes
+    if (axeResults.result.results.passes) {
+        processIssues(axeResults.result.results.passes, 'passes');
     }
 
     return streamData;
