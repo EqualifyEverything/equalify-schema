@@ -51,7 +51,7 @@ curl -X POST http://localhost:3000/api/reformat
 4. Click 'Send'.
 
 ## Contributing
-We beleive standards should be created by hackers.
+We believe standards should be created by hackers.
 
 We invite hackers to refine the STREAM schema and enhance our conversion logic. If you've identified a bug or have a suggestion, please fork this repository, make your changes, and submit a pull request.
 
