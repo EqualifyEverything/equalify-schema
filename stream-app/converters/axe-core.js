@@ -6,57 +6,57 @@ const STATUSES = {
 
 function convertAxeResultsToStream(axeResults) {
     let tagIdCounter = 1;
-    let codeSnippetIdCounter = 1;
+    let codeIdCounter = 1;
     let ruleTagId, messageTagId;
 
     const streamData = {
         messages: [],
         tags: [],
-        codeSnippets: [],
+        code: [],
         pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }],
         statuses: [
-            { statusId: STATUSES.violations, statusName: 'Violations' },
-            { statusId: STATUSES.incomplete, statusName: 'Incomplete' },
-            { statusId: STATUSES.passes, statusName: 'Passes' }
+            { statusId: STATUSES.violations, status: 'Violations' },
+            { statusId: STATUSES.incomplete, status: 'Incomplete' },
+            { statusId: STATUSES.passes, status: 'Passes' }
         ]
     };
 
     const ensureTags = () => {
         if (!ruleTagId) {
             ruleTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: ruleTagId, tagName: 'axe-core Rule' });
+            streamData.tags.push({ tagId: ruleTagId, tag: 'axe-core Rule' });
         }
         if (!messageTagId) {
             messageTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: messageTagId, tagName: 'axe-core Message' });
+            streamData.tags.push({ tagId: messageTagId, tag: 'axe-core Message' });
         }
     };
 
     const formatRuleId = (id) => id.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-    const getOrCreateTagId = (tagName) => {
-        let tagEntry = streamData.tags.find(t => t.tagName === tagName);
+    const getOrCreateTagId = (tag) => {
+        let tagEntry = streamData.tags.find(t => t.tag === tag);
         if (!tagEntry) {
-            tagEntry = { tagId: tagIdCounter++, tagName: tagName };
+            tagEntry = { tagId: tagIdCounter++, tag: tag };
             streamData.tags.push(tagEntry);
         }
         return tagEntry.tagId;
     };
 
-    const addMessage = (messageText, codeSnippetId, status, isRule, additionalTags = []) => {
+    const addMessage = (messageText, codeId, status, isRule, additionalTags = []) => {
         const tagIds = additionalTags.map(getOrCreateTagId);
         tagIds.push(isRule ? ruleTagId : messageTagId);
 
         let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
         if (existingMessage) {
-            if (!existingMessage.relatedCodeSnippetIds.includes(codeSnippetId)) {
-                existingMessage.relatedCodeSnippetIds.push(codeSnippetId);
+            if (!existingMessage.relatedcodeIds.includes(codeId)) {
+                existingMessage.relatedcodeIds.push(codeId);
             }
         } else {
             streamData.messages.push({
                 message: messageText,
                 relatedTagIds: tagIds,
-                relatedCodeSnippetIds: [codeSnippetId],
+                relatedcodeIds: [codeId],
                 relatedPageIds: [1],
                 relatedStatusId: STATUSES[status]
             });
@@ -69,20 +69,20 @@ function convertAxeResultsToStream(axeResults) {
         issues.forEach(issue => {
             const formattedRuleId = formatRuleId(issue.id);
             const ruleMessageText = `${formattedRuleId} Rule: ${issue.description}. ${issue.help}. More information: ${issue.helpUrl}`;
-            const axeCoreTags = issue.tags.map(tagName => tagName); // Capture axe-core issue tags
+            const axeCoreTags = issue.tags.map(tag => tag); // Capture axe-core issue tags
 
             issue.nodes.forEach(node => {
                 node.any.forEach(detail => {
-                    const codeSnippetId = codeSnippetIdCounter++;
-                    streamData.codeSnippets.push({ codeSnippetId, codeSnippet: node.html });
+                    const codeId = codeIdCounter++;
+                    streamData.code.push({ codeId, code: node.html });
                     
                     const detailMessageText = `${detail.message}`;
-                    addMessage(detailMessageText, codeSnippetId, status, false, axeCoreTags);
+                    addMessage(detailMessageText, codeId, status, false, axeCoreTags);
                 });
 
-                const codeSnippetId = codeSnippetIdCounter++;
-                streamData.codeSnippets.push({ codeSnippetId, codeSnippet: node.html });
-                addMessage(ruleMessageText, codeSnippetId, status, true, axeCoreTags);
+                const codeId = codeIdCounter++;
+                streamData.code.push({ codeId, code: node.html });
+                addMessage(ruleMessageText, codeId, status, true, axeCoreTags);
             });
         });
     };
