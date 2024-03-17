@@ -1,11 +1,6 @@
-const STATUSES = {
-    violations: 1,
-    incomplete: 2,
-    passes: 3
-};
-
 function convertAxeResultsToStream(axeResults) {
     let tagIdCounter = 1;
+    let codeSnippetMap = new Map();
     let codeIdCounter = 1;
     let ruleTagId, messageTagId;
 
@@ -13,84 +8,93 @@ function convertAxeResultsToStream(axeResults) {
         messages: [],
         tags: [],
         code: [],
-        pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }],
-        statuses: [
-            { statusId: STATUSES.violations, status: 'Violations' },
-            { statusId: STATUSES.incomplete, status: 'Incomplete' },
-            { statusId: STATUSES.passes, status: 'Passes' }
-        ]
+        pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }]
     };
 
     const ensureTags = () => {
         if (!ruleTagId) {
             ruleTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: ruleTagId, tag: 'axe-core Rule' });
+            streamData.tags.push({ tagId: ruleTagId, tagName: 'axe-core Rule' });
         }
         if (!messageTagId) {
             messageTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: messageTagId, tag: 'axe-core Message' });
+            streamData.tags.push({ tagId: messageTagId, tagName: 'axe-core Message' });
         }
     };
 
     const formatRuleId = (id) => id.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
+    const getOrCreateCodeId = (html) => {
+        if (codeSnippetMap.has(html)) {
+            return codeSnippetMap.get(html);
+        } else {
+            const codeId = codeIdCounter++;
+            codeSnippetMap.set(html, codeId);
+            streamData.code.push({ codeId, code: html });
+            return codeId;
+        }
+    };
+
+    const addOrUpdateMessage = (messageText, html, messageType, isRule, additionalTags = []) => {
+        const codeId = getOrCreateCodeId(html);
+        let existingMessage = streamData.messages.find(m => m.message === messageText && m.type === messageType);
+
+        if (existingMessage) {
+            if (!existingMessage.relatedCodeIds.includes(codeId)) {
+                existingMessage.relatedCodeIds.push(codeId);
+            }
+            additionalTags.forEach(tag => {
+                const tagId = getOrCreateTagId(tag);
+                if (!existingMessage.relatedTagIds.includes(tagId)) {
+                    existingMessage.relatedTagIds.push(tagId);
+                }
+            });
+        } else {
+            const tagIds = [isRule ? ruleTagId : messageTagId].concat(
+                additionalTags.map(tag => getOrCreateTagId(tag))
+            );
+
+            streamData.messages.push({
+                message: messageText,
+                relatedTagIds: tagIds,
+                relatedCodeIds: [codeId],
+                relatedPageIds: [1],
+                type: messageType
+            });
+        }
+    };
+
     const getOrCreateTagId = (tag) => {
-        let tagEntry = streamData.tags.find(t => t.tag === tag);
+        let tagEntry = streamData.tags.find(t => t.tagName === tag);
         if (!tagEntry) {
-            tagEntry = { tagId: tagIdCounter++, tag: tag };
+            tagEntry = { tagId: tagIdCounter++, tagName: tag };
             streamData.tags.push(tagEntry);
         }
         return tagEntry.tagId;
     };
 
-    const addMessage = (messageText, codeId, status, isRule, additionalTags = []) => {
-        const tagIds = additionalTags.map(getOrCreateTagId);
-        tagIds.push(isRule ? ruleTagId : messageTagId);
-
-        let existingMessage = streamData.messages.find(m => m.message === messageText && m.relatedStatusId === STATUSES[status]);
-        if (existingMessage) {
-            if (!existingMessage.relatedcodeIds.includes(codeId)) {
-                existingMessage.relatedcodeIds.push(codeId);
-            }
-        } else {
-            streamData.messages.push({
-                message: messageText,
-                relatedTagIds: tagIds,
-                relatedcodeIds: [codeId],
-                relatedPageIds: [1],
-                relatedStatusId: STATUSES[status]
-            });
-        }
-    };
-
-    const processIssues = (issues, status) => {
+    const processIssues = (issues, messageType) => {
         ensureTags();
 
         issues.forEach(issue => {
             const formattedRuleId = formatRuleId(issue.id);
             const ruleMessageText = `${formattedRuleId} Rule: ${issue.description}. ${issue.help}. More information: ${issue.helpUrl}`;
-            const axeCoreTags = issue.tags.map(tag => tag); // Capture axe-core issue tags
 
             issue.nodes.forEach(node => {
-                node.any.forEach(detail => {
-                    const codeId = codeIdCounter++;
-                    streamData.code.push({ codeId, code: node.html });
-                    
-                    const detailMessageText = `${detail.message}`;
-                    addMessage(detailMessageText, codeId, status, false, axeCoreTags);
-                });
+                addOrUpdateMessage(ruleMessageText, node.html, messageType, true, issue.tags);
 
-                const codeId = codeIdCounter++;
-                streamData.code.push({ codeId, code: node.html });
-                addMessage(ruleMessageText, codeId, status, true, axeCoreTags);
+                node.any.forEach(detail => {
+                    const detailMessageText = detail.message;
+                    addOrUpdateMessage(detailMessageText, node.html, messageType, false, issue.tags);
+                });
             });
         });
     };
 
-    processIssues(axeResults.result.results.violations, 'violations');
-    processIssues(axeResults.result.results.incomplete, 'incomplete');
+    processIssues(axeResults.result.results.violations, 'violation');
+    processIssues(axeResults.result.results.incomplete, 'error');
     if (axeResults.result.results.passes) {
-        processIssues(axeResults.result.results.passes, 'passes');
+        processIssues(axeResults.result.results.passes, 'pass');
     }
 
     return streamData;
