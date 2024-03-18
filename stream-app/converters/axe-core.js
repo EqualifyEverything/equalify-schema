@@ -8,10 +8,10 @@ function convertAxeResultsToStream(axeResults) {
     const tagMap = new Map(); // Added to track existing tags
 
     const streamData = {
+        url: axeResults.result.results.url,
         messages: [],
         tags: [],
-        nodes: [],
-        urls: [{ urlId: 1, url: axeResults.result.results.url }]
+        nodes: []
     };
 
     const ensureTags = () => {
@@ -60,7 +60,6 @@ function convertAxeResultsToStream(axeResults) {
                 message: messageText,
                 relatedTagIds: tagIds,
                 relatedNodeIds: [nodeId],
-                relatedUrlIds: [1],
                 type: messageType
             };
             streamData.messages.push(message);
