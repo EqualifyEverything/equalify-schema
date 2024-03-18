@@ -22,22 +22,22 @@ app.post('/api/reformat', (req, res) => {
     const validate = ajv.compile(streamSchema);
     const valid = validate(streamData);
 
-    // Custom validation for unique codes, tagNames, pageURLs, and unique messages with types
+    // Custom validation for unique codes, tags, urls, and unique messages with types
     const uniqueCodes = new Set();
-    const uniqueTagNames = new Set();
-    const uniquePageUrls = new Set();
+    const uniqueTags = new Set();
+    const uniqueUrls = new Set();
     const uniqueMessages = new Set();
 
     streamData.code.forEach(c => uniqueCodes.add(c.code));
-    streamData.tags.forEach(t => uniqueTagNames.add(t.tagName));
-    streamData.pages.forEach(p => uniquePageUrls.add(p.pageUrl));
+    streamData.tags.forEach(t => uniqueTags.add(t.tag));
+    streamData.urls.forEach(p => uniqueUrls.add(p.url));
     streamData.messages.forEach(m => uniqueMessages.add(`${m.message}::${m.type}`));
 
     // Check for duplicates in the sets
     const errors = [];
     if (uniqueCodes.size !== streamData.code.length) errors.push({ message: "Duplicate codes detected." });
-    if (uniqueTagNames.size !== streamData.tags.length) errors.push({ message: "Duplicate tag names detected." });
-    if (uniquePageUrls.size !== streamData.pages.length) errors.push({ message: "Duplicate page URLs detected." });
+    if (uniqueTags.size !== streamData.tags.length) errors.push({ message: "Duplicate tags detected." });
+    if (uniqueUrls.size !== streamData.urls.length) errors.push({ message: "Duplicate URLs detected." });
     if (uniqueMessages.size !== streamData.messages.length) errors.push({ message: "Duplicate messages with the same type detected." });
 
     if (!valid || errors.length > 0) {

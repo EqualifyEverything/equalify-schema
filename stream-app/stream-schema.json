@@ -17,13 +17,13 @@
             "type": "array",
             "items": { "type": "integer" }
           },
-          "relatedPageIds": {
+          "relatedUrlIds": {
             "type": "array",
             "items": { "type": "integer" }
           },
           "type": { "type": "string", "enum": ["pass", "error", "violation"] }
         },
-        "required": ["message", "relatedTagIds", "relatedCodeIds", "relatedPageIds", "type"]
+        "required": ["message", "relatedTagIds", "relatedCodeIds", "relatedUrlIds", "type"]
       }
     },
     "tags": {
@@ -32,9 +32,9 @@
         "type": "object",
         "properties": {
           "tagId": { "type": "integer" },
-          "tagName": { "type": "string" }
+          "tag": { "type": "string" }
         },
-        "required": ["tagId", "tagName"]
+        "required": ["tagId", "tag"]
       }
     },
     "code": {
@@ -48,17 +48,17 @@
         "required": ["codeId", "code"]
       }
     },
-    "pages": {
+    "urls": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "pageId": { "type": "integer" },
-          "pageUrl": { "type": "string" }
+          "urlId": { "type": "integer" },
+          "url": { "type": "string" }
         },
-        "required": ["pageId", "pageUrl"]
+        "required": ["urlId", "url"]
       }
     }
   },
-  "required": ["messages", "tags", "code", "pages"]
+  "required": ["messages", "tags", "code", "urls"]
 }

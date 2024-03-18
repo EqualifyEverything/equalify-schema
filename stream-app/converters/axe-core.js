@@ -8,17 +8,17 @@ function convertAxeResultsToStream(axeResults) {
         messages: [],
         tags: [],
         code: [],
-        pages: [{ pageId: 1, pageUrl: axeResults.result.results.url }]
+        urls: [{ urlId: 1, url: axeResults.result.results.url }]
     };
 
     const ensureTags = () => {
         if (!ruleTagId) {
             ruleTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: ruleTagId, tagName: 'axe-core Rule' });
+            streamData.tags.push({ tagId: ruleTagId, tag: 'axe-core Rule' });
         }
         if (!messageTagId) {
             messageTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: messageTagId, tagName: 'axe-core Message' });
+            streamData.tags.push({ tagId: messageTagId, tag: 'axe-core Message' });
         }
     };
 
@@ -58,16 +58,16 @@ function convertAxeResultsToStream(axeResults) {
                 message: messageText,
                 relatedTagIds: tagIds,
                 relatedCodeIds: [codeId],
-                relatedPageIds: [1],
+                relatedUrlIds: [1],
                 type: messageType
             });
         }
     };
 
     const getOrCreateTagId = (tag) => {
-        let tagEntry = streamData.tags.find(t => t.tagName === tag);
+        let tagEntry = streamData.tags.find(t => t.tag === tag);
         if (!tagEntry) {
-            tagEntry = { tagId: tagIdCounter++, tagName: tag };
+            tagEntry = { tagId: tagIdCounter++, tag: tag };
             streamData.tags.push(tagEntry);
         }
         return tagEntry.tagId;
