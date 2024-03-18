@@ -1,76 +1,76 @@
 function convertAxeResultsToStream(axeResults) {
     let tagIdCounter = 1;
-    let codeSnippetMap = new Map();
-    let codeIdCounter = 1;
+    let nodeIdCounter = 1;
     let ruleTagId, messageTagId;
+
+    const nodeMap = new Map();
+    const messageMap = new Map();
+    const tagMap = new Map(); // Added to track existing tags
 
     const streamData = {
         messages: [],
         tags: [],
-        code: [],
+        nodes: [],
         urls: [{ urlId: 1, url: axeResults.result.results.url }]
     };
 
     const ensureTags = () => {
         if (!ruleTagId) {
-            ruleTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: ruleTagId, tag: 'axe-core Rule' });
+            const ruleTag = 'axe-core Rule';
+            ruleTagId = getOrCreateTagId(ruleTag); // Use getOrCreateTagId to handle ruleTag
         }
         if (!messageTagId) {
-            messageTagId = tagIdCounter++;
-            streamData.tags.push({ tagId: messageTagId, tag: 'axe-core Message' });
+            const messageTag = 'axe-core Message';
+            messageTagId = getOrCreateTagId(messageTag); // Use getOrCreateTagId to handle messageTag
         }
     };
 
     const formatRuleId = (id) => id.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-    const getOrCreateCodeId = (html) => {
-        if (codeSnippetMap.has(html)) {
-            return codeSnippetMap.get(html);
+    const getOrCreateTagId = (tag) => {
+        if (tagMap.has(tag)) {
+            return tagMap.get(tag);
         } else {
-            const codeId = codeIdCounter++;
-            codeSnippetMap.set(html, codeId);
-            streamData.code.push({ codeId, code: html });
-            return codeId;
+            const tagId = tagIdCounter++;
+            tagMap.set(tag, tagId);
+            streamData.tags.push({ tagId, tag }); // Note the use of 'tag' to match the schema
+            return tagId;
         }
     };
 
-    const addOrUpdateMessage = (messageText, html, messageType, isRule, additionalTags = []) => {
-        const codeId = getOrCreateCodeId(html);
-        let existingMessage = streamData.messages.find(m => m.message === messageText && m.type === messageType);
+    const getOrCreateNodeId = (html, targets) => {
+        const key = `${html}::${targets.join(',')}`;
+        if (!nodeMap.has(key)) {
+            const nodeId = nodeIdCounter++;
+            nodeMap.set(key, nodeId);
+            streamData.nodes.push({ nodeId, html, targets });
+        }
+        return nodeMap.get(key);
+    };
 
-        if (existingMessage) {
-            if (!existingMessage.relatedCodeIds.includes(codeId)) {
-                existingMessage.relatedCodeIds.push(codeId);
-            }
-            additionalTags.forEach(tag => {
-                const tagId = getOrCreateTagId(tag);
-                if (!existingMessage.relatedTagIds.includes(tagId)) {
-                    existingMessage.relatedTagIds.push(tagId);
-                }
-            });
-        } else {
-            const tagIds = [isRule ? ruleTagId : messageTagId].concat(
-                additionalTags.map(tag => getOrCreateTagId(tag))
-            );
+    const addOrUpdateMessage = (messageText, messageType, isRule, html, targets, additionalTags = []) => {
+        const nodeId = getOrCreateNodeId(html, targets);
+        const key = `${messageText}::${messageType}`;
+        const tagIds = [isRule ? ruleTagId : messageTagId].concat(
+            additionalTags.map(tag => getOrCreateTagId(tag))
+        );
 
-            streamData.messages.push({
+        if (!messageMap.has(key)) {
+            const message = {
                 message: messageText,
                 relatedTagIds: tagIds,
-                relatedCodeIds: [codeId],
+                relatedNodeIds: [nodeId],
                 relatedUrlIds: [1],
                 type: messageType
-            });
+            };
+            streamData.messages.push(message);
+            messageMap.set(key, message);
+        } else {
+            const existingMessage = messageMap.get(key);
+            if (!existingMessage.relatedNodeIds.includes(nodeId)) {
+                existingMessage.relatedNodeIds.push(nodeId);
+            }
         }
-    };
-
-    const getOrCreateTagId = (tag) => {
-        let tagEntry = streamData.tags.find(t => t.tag === tag);
-        if (!tagEntry) {
-            tagEntry = { tagId: tagIdCounter++, tag: tag };
-            streamData.tags.push(tagEntry);
-        }
-        return tagEntry.tagId;
     };
 
     const processIssues = (issues, messageType) => {
@@ -81,11 +81,12 @@ function convertAxeResultsToStream(axeResults) {
             const ruleMessageText = `${formattedRuleId} Rule: ${issue.description}. ${issue.help}. More information: ${issue.helpUrl}`;
 
             issue.nodes.forEach(node => {
-                addOrUpdateMessage(ruleMessageText, node.html, messageType, true, issue.tags);
+                const targets = node.target || [];
+                addOrUpdateMessage(ruleMessageText, messageType, true, node.html, targets, issue.tags);
 
                 node.any.forEach(detail => {
                     const detailMessageText = detail.message;
-                    addOrUpdateMessage(detailMessageText, node.html, messageType, false, issue.tags);
+                    addOrUpdateMessage(detailMessageText, messageType, false, node.html, targets, issue.tags);
                 });
             });
         });

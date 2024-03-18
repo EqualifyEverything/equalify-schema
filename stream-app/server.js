@@ -22,20 +22,21 @@ app.post('/api/reformat', (req, res) => {
     const validate = ajv.compile(streamSchema);
     const valid = validate(streamData);
 
-    // Custom validation for unique codes, tags, urls, and unique messages with types
-    const uniqueCodes = new Set();
+    // Custom validation for unique nodes, tags, urls, and messages with types
+    const uniqueNodes = new Set();
     const uniqueTags = new Set();
     const uniqueUrls = new Set();
     const uniqueMessages = new Set();
 
-    streamData.code.forEach(c => uniqueCodes.add(c.code));
+    // Use a combination of HTML and targets to identify unique nodes
+    streamData.nodes.forEach(n => uniqueNodes.add(`${n.html}::${n.targets.join(',')}`));
     streamData.tags.forEach(t => uniqueTags.add(t.tag));
-    streamData.urls.forEach(p => uniqueUrls.add(p.url));
+    streamData.urls.forEach(u => uniqueUrls.add(u.url));
     streamData.messages.forEach(m => uniqueMessages.add(`${m.message}::${m.type}`));
 
     // Check for duplicates in the sets
     const errors = [];
-    if (uniqueCodes.size !== streamData.code.length) errors.push({ message: "Duplicate codes detected." });
+    if (uniqueNodes.size !== streamData.nodes.length) errors.push({ message: "Duplicate nodes detected." });
     if (uniqueTags.size !== streamData.tags.length) errors.push({ message: "Duplicate tags detected." });
     if (uniqueUrls.size !== streamData.urls.length) errors.push({ message: "Duplicate URLs detected." });
     if (uniqueMessages.size !== streamData.messages.length) errors.push({ message: "Duplicate messages with the same type detected." });

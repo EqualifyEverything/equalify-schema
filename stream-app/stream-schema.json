@@ -13,7 +13,7 @@
             "type": "array",
             "items": { "type": "integer" }
           },
-          "relatedCodeIds": {
+          "relatedNodeIds": {
             "type": "array",
             "items": { "type": "integer" }
           },
@@ -23,7 +23,7 @@
           },
           "type": { "type": "string", "enum": ["pass", "error", "violation"] }
         },
-        "required": ["message", "relatedTagIds", "relatedCodeIds", "relatedUrlIds", "type"]
+        "required": ["message", "relatedTagIds", "relatedNodeIds", "relatedUrlIds", "type"]
       }
     },
     "tags": {
@@ -37,15 +37,19 @@
         "required": ["tagId", "tag"]
       }
     },
-    "code": {
+    "nodes": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "codeId": { "type": "integer" },
-          "code": { "type": "string" }
+          "nodeId": { "type": "integer" },
+          "html": { "type": "string" },
+          "targets": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
         },
-        "required": ["codeId", "code"]
+        "required": ["nodeId", "html"]
       }
     },
     "urls": {
@@ -60,5 +64,5 @@
       }
     }
   },
-  "required": ["messages", "tags", "code", "urls"]
+  "required": ["messages", "tags", "nodes", "urls"]
 }
