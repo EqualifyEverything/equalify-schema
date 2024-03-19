@@ -11,6 +11,11 @@ STREAM simplifies the accessibility testing landscape by:
 
 Our initiative encourages testing providers to distinguish their unique offerings while establishing a common ground for evaluating various tools' outputs.
 
+## Key Benefits
+- **Reduced File Size**: Most savings are the way we parse for unique messages and our relational tagging structure.
+- **Fasting Parsing**: Smaller file sizes mean reduced processing. Also, using IDs facilitates faster lookup, filtering, and aggregation operations.
+- **Reduced Redundancy**: We're following principles of database normalization, which yield a lot of benefits in maintainability and efficiency,
+
 ## Getting Started
 ### Running the STREAM App
 The STREAM app transforms accessibility test outputs into the STREAM format, ensuring compliance with the defined [stream-schema.json](stream-schema.json).
@@ -42,7 +47,6 @@ curl -X POST http://localhost:3000/api/reformat
 -H "Content-Type: application/json"
 -d '[Your JSON data here]'
 ```
-
 
 **With Postman:**
 1. Set the request type to `POST`.
