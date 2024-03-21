@@ -61,16 +61,16 @@ STREAM is a standard created by hacking.
 
 Anyone who wants to update STREAM can. If you've identified a bug or have a suggestion, please fork this repository, make your changes, and submit a pull request.
 
+**Areas of Interest:**
+- Bug fixes
+- Support for new scans
+
 ## Why aren't we working with WAI?
 The Web Accessibility Initiative (WAI) is an awesome organization building accessibility policy through consensus. 
 
 Unfortunately, Equalify can't afford to participate in the policy-building processes that WAI encourages. Equalify is a small organization trying to do big things. 
 
 STREAM is built to address the immediate needs of Equalify and contributors who want to join the development. As we find technical challenges, we update the standard. Maybe at CSUN 2025, we'll present a paper showing the problems and solutions that STREAM addresses. We welcome anyone with the bandwidth to work with WAI to take our project into something like a new version of [EARL](https://www.w3.org/WAI/standards-guidelines/earl/).
-
-**Areas of Interest:**
-- Bug fixes
-- New conversion methodologies
 
 ## Support and Maintenance
 STREAM is  maintained by [Equalify](http://github.com/equalifyEverything/), a community-driven initiative to build Open Source web accessibility tools. 
