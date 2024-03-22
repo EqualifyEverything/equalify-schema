@@ -2,7 +2,7 @@
 **Standardized Test Results for Equal Accessibility Measurement (STREAM)**
 
 ## Problem
-Equalify reformats lots of accessibility test results. We are tired of it! We would rather spend time building solutions from various scans that output results in a unified format that's easy to understand. (We tried to understand [EARL](https://www.w3.org/WAI/standards-guidelines/earl/), but it's quite complicated and hasn't been updated since 2017.)
+Accessibility test results are formatted in lots of different ways. That means we have to reformat the results into a standard format that has to be constantly updated when scans change. That work costs valuable time as we try to build new tools that integrate with scans. Existing standardized schemas, including [EARL](https://www.w3.org/WAI/standards-guidelines/earl/), are hard to understand and not widely adopted.
 
 ## Our Solution
 STREAM standardizes accessibility test results into a format that's both human-readable and comprehensive, making it easier to identify and rectify accessibility issues.
@@ -66,18 +66,22 @@ Anyone who wants to update STREAM can. If you've identified a bug or have a sugg
 - Support for new scans
 
 ## Why aren't we working with WAI?
-The Web Accessibility Initiative (WAI) is an awesome organization building accessibility policy through consensus. 
+The Web Accessibility Initiative (WAI) is an awesome organization building accessibility policy. 
 
-Unfortunately, Equalify can't afford to participate in the policy-building processes that WAI encourages. Equalify is a small organization trying to do big things. 
+Unfortunately, Equalify can't afford to participate in the policy-building processes that WAI encourages. Equalify is a small organization trying to do big things, and we only have so much time!
 
-STREAM is built to address the immediate needs of Equalify and contributors who want to join the development. As we find technical challenges, we update the standard. Maybe at CSUN 2025, we'll present a paper showing the problems and solutions that STREAM addresses. We welcome anyone with the bandwidth to work with WAI to take our project into something like a new version of [EARL](https://www.w3.org/WAI/standards-guidelines/earl/).
+STREAM is built to address the immediate needs of Equalify and contributors who want to join the development. As we find technical challenges, we update STREAM. Maybe at CSUN 2025, we'll present a paper showing the problems and solutions that STREAM addresses. We welcome anyone working with WAI to take our project into something like a new version of [EARL](https://www.w3.org/WAI/standards-guidelines/earl/).
 
-## Support and Maintenance
-STREAM is  maintained by [Equalify](http://github.com/equalifyEverything/), a community-driven initiative to build Open Source web accessibility tools. 
-
-**Support Equalify:**
-- Star our [GitHub repo](https://github.com/EqualifyEverything/equalify)
-- Try our [hosted services](https://equalify.app)
+## Maintainers
+STREAM is maintained by [Equalify](http://github.com/equalifyEverything/). Anyone else is welcome to contribute.
 
 **Interested in becoming a maintainer?** 
-Submit a PR with your in this section to join the cause.
+Submit a PR with your name in this section to join the cause.
+
+## Support Equalify
+Equalify is a community-driven initiative to build Open Source web accessibility tools. 
+
+Three easy ways to support us:
+- Star our [GitHub repo](https://github.com/EqualifyEverything/equalify).
+- Try our [hosted services](https://equalify.app).
+- Contribute to [our projects](https://github.com/orgs/EqualifyEverything/repositories).
