@@ -8,7 +8,7 @@ function convertAxeResultsToStream(axeResults) {
     const tagMap = new Map(); 
 
     const streamData = {
-        urls: [{ urlId: 1, url: axeResults.result.results.url }], // This script only converts one url
+        urls: [{ urlId: 1, url: axeResults.results.url }], // This script only converts one url
         messages: [],
         tags: [],
         nodes: []
@@ -43,7 +43,13 @@ function convertAxeResultsToStream(axeResults) {
         if (!nodeMap.has(key)) {
             const nodeId = nodeIdCounter++;
             nodeMap.set(key, nodeId);
-            streamData.nodes.push({ nodeId, html, targets });
+            streamData.nodes.push({ 
+                nodeId, 
+                html, 
+                targets, 
+                relatedUrlIds: [1],
+                equalified: false  
+             });
         }
         return nodeMap.get(key);
     };
@@ -60,7 +66,6 @@ function convertAxeResultsToStream(axeResults) {
                 message: messageText,
                 relatedTagIds: tagIds,
                 relatedNodeIds: [nodeId],
-                relatedUrlIds: [1], // This script only converts one url
                 type: messageType
             };
             streamData.messages.push(message);
@@ -98,10 +103,14 @@ function convertAxeResultsToStream(axeResults) {
         });
     };
 
-    processIssues(axeResults.result.results.violations, 'violation');
-    processIssues(axeResults.result.results.incomplete, 'error');
-    if (axeResults.result.results.passes) {
-        processIssues(axeResults.result.results.passes, 'pass');
+    if (axeResults.results.violations) {
+        processIssues(axeResults.results.violations, 'violation');
+    }
+    if (axeResults.results.incomplete) {
+        processIssues(axeResults.results.incomplete, 'error');
+    }
+    if (axeResults.results.passes) {
+        processIssues(axeResults.results.passes, 'pass');
     }
 
     return streamData;

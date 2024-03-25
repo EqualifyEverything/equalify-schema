@@ -28,13 +28,9 @@
             "type": "array",
             "items": { "type": "integer" }
           },
-          "relatedUrlIds": {
-            "type": "array",
-            "items": { "type": "integer" } 
-          },
           "type": { "type": "string", "enum": ["pass", "error", "violation"] }
         },
-        "required": ["message", "relatedTagIds", "relatedNodeIds", "relatedUrlIds", "type"] 
+        "required": ["message", "relatedTagIds", "relatedNodeIds", "type"] 
       }
     },
     "tags": {
@@ -59,9 +55,13 @@
             "type": "array",
             "items": { "type": "string" }
           },
+          "relatedUrlIds": {
+            "type": "array",
+            "items": { "type": "integer" } 
+          },
           "equalified": { "type": "boolean" } 
         },
-        "required": ["nodeId", "html", "equalified"] 
+        "required": ["nodeId", "html", "relatedUrlIds", "equalified"] 
       }
     }
   },
