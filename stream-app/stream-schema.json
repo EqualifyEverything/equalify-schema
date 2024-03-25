@@ -3,7 +3,17 @@
   "title": "STREAM Schema",
   "type": "object",
   "properties": {
-    "url": { "type": "string" },
+    "urls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "urlId": { "type": "integer" },
+          "url": { "type": "string" }
+        },
+        "required": ["urlId", "url"]
+      }
+    },
     "messages": {
       "type": "array",
       "items": {
@@ -18,9 +28,13 @@
             "type": "array",
             "items": { "type": "integer" }
           },
+          "relatedUrlIds": {
+            "type": "array",
+            "items": { "type": "integer" } 
+          },
           "type": { "type": "string", "enum": ["pass", "error", "violation"] }
         },
-        "required": ["message", "relatedTagIds", "relatedNodeIds", "type"]
+        "required": ["message", "relatedTagIds", "relatedNodeIds", "relatedUrlIds", "type"] 
       }
     },
     "tags": {
@@ -44,11 +58,12 @@
           "targets": {
             "type": "array",
             "items": { "type": "string" }
-          }
+          },
+          "equalified": { "type": "boolean" } 
         },
-        "required": ["nodeId", "html"]
+        "required": ["nodeId", "html", "equalified"] 
       }
     }
   },
-  "required": ["messages", "tags", "nodes", "url"]
+  "required": ["messages", "tags", "nodes", "urls"] 
 }

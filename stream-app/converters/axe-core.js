@@ -5,10 +5,10 @@ function convertAxeResultsToStream(axeResults) {
 
     const nodeMap = new Map();
     const messageMap = new Map();
-    const tagMap = new Map(); // Added to track existing tags
+    const tagMap = new Map(); 
 
     const streamData = {
-        url: axeResults.result.results.url,
+        urls: [{ urlId: 1, url: axeResults.result.results.url }], // This script only converts one url
         messages: [],
         tags: [],
         nodes: []
@@ -17,11 +17,11 @@ function convertAxeResultsToStream(axeResults) {
     const ensureTags = () => {
         if (!ruleTagId) {
             const ruleTag = 'axe-core Rule';
-            ruleTagId = getOrCreateTagId(ruleTag); // Use getOrCreateTagId to handle ruleTag
+            ruleTagId = getOrCreateTagId(ruleTag);
         }
         if (!messageTagId) {
             const messageTag = 'axe-core Message';
-            messageTagId = getOrCreateTagId(messageTag); // Use getOrCreateTagId to handle messageTag
+            messageTagId = getOrCreateTagId(messageTag); 
         }
     };
 
@@ -33,7 +33,7 @@ function convertAxeResultsToStream(axeResults) {
         } else {
             const tagId = tagIdCounter++;
             tagMap.set(tag, tagId);
-            streamData.tags.push({ tagId, tag }); // Note the use of 'tag' to match the schema
+            streamData.tags.push({ tagId, tag });
             return tagId;
         }
     };
@@ -60,6 +60,7 @@ function convertAxeResultsToStream(axeResults) {
                 message: messageText,
                 relatedTagIds: tagIds,
                 relatedNodeIds: [nodeId],
+                relatedUrlIds: [1], // This script only converts one url
                 type: messageType
             };
             streamData.messages.push(message);
@@ -87,6 +88,12 @@ function convertAxeResultsToStream(axeResults) {
                     const detailMessageText = detail.message;
                     addOrUpdateMessage(detailMessageText, messageType, false, node.html, targets, issue.tags);
                 });
+
+                const nodeId = getOrCreateNodeId(node.html, targets); 
+                const nodeInStream = streamData.nodes.find(n => n.nodeId === nodeId);
+                if (nodeInStream) {
+                    nodeInStream.equalified = (messageType === 'pass');
+                }
             });
         });
     };
