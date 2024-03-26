@@ -47,7 +47,7 @@ function convertAxeResultsToStream(axeResults) {
                 nodeId, 
                 html, 
                 targets, 
-                relatedUrlIds: [1],
+                relatedUrlId: 1,
                 equalified: false  
              });
         }

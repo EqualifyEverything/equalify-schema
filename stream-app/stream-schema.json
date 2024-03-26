@@ -55,13 +55,10 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          "relatedUrlIds": {
-            "type": "array",
-            "items": { "type": "integer" } 
-          },
+          "relatedUrlId": { "type": "integer" },
           "equalified": { "type": "boolean" } 
         },
-        "required": ["nodeId", "html", "relatedUrlIds", "equalified"] 
+        "required": ["nodeId", "html", "relatedUrlId", "equalified"] 
       }
     }
   },
