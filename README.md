@@ -1,5 +1,5 @@
 # Equalify Schema 
-**Data Schema behind the Equalify App**
+**A Super Simple Data Schema By Equalify**
 
 ## Problem
 Accessibility test results are formatted in lots of different ways. That means we have to reformat the results into a standard format that has to be constantly updated when scans change. That work costs valuable time as we try to build new tools that integrate with scans. Existing standardized schemas, including [EARL](https://www.w3.org/WAI/standards-guidelines/earl/), are hard to understand and not widely adopted.
