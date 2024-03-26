@@ -1,35 +1,31 @@
-# STREAM 
-**Standardized Test Results for Equal Accessibility Measurement (STREAM)**
+# Equalify Schema 
+**Data Schema behind the Equalify App**
 
 ## Problem
 Accessibility test results are formatted in lots of different ways. That means we have to reformat the results into a standard format that has to be constantly updated when scans change. That work costs valuable time as we try to build new tools that integrate with scans. Existing standardized schemas, including [EARL](https://www.w3.org/WAI/standards-guidelines/earl/), are hard to understand and not widely adopted.
 
 ## Our Solution
-STREAM standardizes accessibility test results into a format that's both human-readable and comprehensive, making it easier to identify and rectify accessibility issues.
+Equalify Schema standardizes accessibility test results into a format that's both human-readable and comprehensive, making it easier to identify and rectify accessibility issues.
 
-STREAM simplifies the accessibility testing landscape by:
-1. **Preserving critical violation and success data** to aid in remediation efforts.
-2. **Enhancing readability** to ensure results are easily understood at a glance.
-
-Equalify and participating devs are developing [stream-schema.json](https://github.com/EqualifyEverything/STREAM/blob/main/stream-app/stream-schema.json) to standardize how results are reported.
+Equalify and participating devs are developing [equalify-schema.json](https://github.com/EqualifyEverything/Equalify Schema/blob/main/equalify-schema/equalify-schema.json) to standardize how results are reported.
 
 ## Key Benefits
-- **Reduced File Size**: STREAM reformats complex data into a simple structure that reduces redundancy.
+- **Reduced File Size**: The Equalify Schema reformats complex data into a simple structure that reduces redundancy.
 - **Faster Processing**: Smaller file sizes with a simple structure mean reduced processing time.
-- **Reduced Redundancy**: All content in a STREAM file is unique, so you see fewer redundant items like messages and tags.
+- **Reduced Redundancy**: All content in a schema file is unique, so you see fewer redundant items like messages and tags.
 
 ## Getting Started
-### Running the STREAM App
-The STREAM app transforms accessibility test outputs into the STREAM format, ensuring compliance with [stream-schema.json](https://github.com/EqualifyEverything/STREAM/blob/main/stream-app/stream-schema.json).
+### Running the Equalify Schema App
+The Equalify Schema app transforms accessibility test outputs into the Equalify Schema format, ensuring compliance with [equalify-schema.json](https://github.com/EqualifyEverything/Equalify Schema/blob/main/equalify-schema/equalify-schema.json).
 
 **Prerequisites:**
 - Node.js
 - npm
 
 **Steps:**
-1. Clone this repository and navigate to the `stream-app` directory:
+1. Clone this repository and navigate to the `equalify-schema-app` directory:
 ```
-cd stream-app
+cd equalify-schema-app
 ```
 2. Install dependencies:
 ```
@@ -57,23 +53,25 @@ curl -X POST http://localhost:3000/api/reformat
 4. Click 'Send'.
 
 ## Contributing
-STREAM is a standard created by hacking.
+Equalify Schema is a standard created by hacking.
 
-Anyone who wants to update STREAM can. If you've identified a bug or have a suggestion, please fork this repository, make your changes, and submit a pull request.
+Anyone who wants to update the Equalify Schema can. If you've identified a bug or have a suggestion, please fork this repository, make your changes, and submit a pull request.
 
 **Areas of Interest:**
 - Bug fixes
 - Support for new scans
 
 ## Why aren't we working with WAI?
-The Web Accessibility Initiative (WAI) is an awesome organization building accessibility policy. 
+This schema has the potential to replace [EARL](https://www.w3.org/WAI/standards-guidelines/earl/), maintained by The Web Accessibility Initiative (WAI).
+
+WAI is an awesome organization building accessibility policy. 
 
 Unfortunately, Equalify can't afford to participate in the policy-building processes that WAI encourages. Equalify is a small organization trying to do big things, and we only have so much time!
 
-STREAM is built to address the immediate needs of Equalify and contributors who want to join the development. As we find technical challenges, we update STREAM. Maybe at CSUN 2025, we'll present a paper showing the problems and solutions that STREAM addresses. We welcome anyone working with WAI to take our project into something like a new version of [EARL](https://www.w3.org/WAI/standards-guidelines/earl/).
+Equalify Schema is built to address the immediate needs of Equalify and contributors who want to join the development. As we find technical challenges, we update Equalify Schema. Maybe at CSUN 2025, we'll present a paper showing the problems and solutions that Equalify Schema addresses. We welcome anyone working with WAI to take our project into something like a new version of [EARL](https://www.w3.org/WAI/standards-guidelines/earl/).
 
 ## Maintainers
-STREAM is maintained by [Equalify](http://github.com/equalifyEverything/). Anyone else is welcome to contribute.
+Equalify Schema is maintained by [Equalify](http://github.com/equalifyEverything/). Anyone else is welcome to contribute.
 
 **Interested in becoming a maintainer?** 
 Submit a PR with your name in this section to join the cause.
