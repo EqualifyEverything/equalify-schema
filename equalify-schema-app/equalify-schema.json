@@ -3,6 +3,10 @@
   "title": "STREAM Schema",
   "type": "object",
   "properties": {
+    "source": {
+      "type": "string",
+      "enum": ["scan", "extension", "manual"]
+    },
     "urls": {
       "type": "array",
       "items": {
@@ -30,7 +34,7 @@
           },
           "type": { "type": "string", "enum": ["pass", "error", "violation"] }
         },
-        "required": ["message", "relatedTagIds", "relatedNodeIds", "type"] 
+        "required": ["message", "relatedTagIds", "relatedNodeIds", "type"]
       }
     },
     "tags": {
@@ -56,11 +60,11 @@
             "items": { "type": "string" }
           },
           "relatedUrlId": { "type": "integer" },
-          "equalified": { "type": "boolean" } 
+          "equalified": { "type": "boolean" }
         },
-        "required": ["nodeId", "html", "relatedUrlId", "equalified"] 
+        "required": ["nodeId", "html", "relatedUrlId", "equalified"]
       }
     }
   },
-  "required": ["messages", "tags", "nodes", "urls"] 
+  "required": ["messages", "tags", "nodes", "urls", "source"]
 }
