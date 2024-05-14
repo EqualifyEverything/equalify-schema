@@ -1,0 +1,28 @@
+{
+  "name": "@equalifyapp/equalify-schema",
+  "version": "1.0.0",
+  "description": "JSON schema for web acccessibility results.",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EqualifyEverything/equalify-schema.git"
+  },
+  "keywords": [
+    "web",
+    "accessiblity",
+    "accessibility",
+    "schema",
+    "json",
+    "equalify",
+    "a11y"
+  ],
+  "author": "Blake Bertuccelli-Booth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EqualifyEverything/equalify-schema/issues"
+  },
+  "homepage": "https://github.com/EqualifyEverything/equalify-schema#readme"
+}
