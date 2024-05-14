@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/EqualifyEverything/equalify-schema/issues"
   },
-  "homepage": "https://github.com/EqualifyEverything/equalify-schema#readme"
+  "homepage": "https://github.com/EqualifyEverything/equalify-schema#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
