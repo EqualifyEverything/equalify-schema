@@ -107,7 +107,7 @@ function convertAxeResultsToStream(axeResults) {
         processIssues(axeResults.results.violations, 'violation');
     }
     if (axeResults.results.incomplete) {
-        processIssues(axeResults.results.incomplete, 'error');
+        processIssues(axeResults.results.incomplete, 'warning');
     }
     if (axeResults.results.passes) {
         processIssues(axeResults.results.passes, 'pass');
