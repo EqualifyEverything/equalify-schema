@@ -3,10 +3,6 @@
   "title": "STREAM Schema",
   "type": "object",
   "properties": {
-    "source": {
-      "type": "string",
-      "enum": ["scan", "extension", "manual"]
-    },
     "urls": {
       "type": "array",
       "items": {
@@ -66,5 +62,5 @@
       }
     }
   },
-  "required": ["messages", "tags", "nodes", "urls", "source"]
+  "required": ["messages", "tags", "nodes", "urls"]
 }
