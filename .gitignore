@@ -109,3 +109,5 @@ dist
 # Temp files
 tmp
 temp
+.DS_Store
+package-lock.json
