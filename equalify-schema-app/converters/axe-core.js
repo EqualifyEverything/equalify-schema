@@ -1,4 +1,4 @@
-function convertAxeResultsToStream(axeResults) {
+function convertAxeResultsToEqualifySchema(axeResults) {
     let tagIdCounter = 1;
     let nodeIdCounter = 1;
     let ruleTagId, messageTagId;
@@ -7,7 +7,7 @@ function convertAxeResultsToStream(axeResults) {
     const messageMap = new Map();
     const tagMap = new Map(); 
 
-    const streamData = {
+    const equalifySchemaData = {
         urls: [{ urlId: 1, url: axeResults.results.url }], // This script only converts one url
         messages: [],
         tags: [],
@@ -33,7 +33,7 @@ function convertAxeResultsToStream(axeResults) {
         } else {
             const tagId = tagIdCounter++;
             tagMap.set(tag, tagId);
-            streamData.tags.push({ tagId, tag });
+            equalifySchemaData.tags.push({ tagId, tag });
             return tagId;
         }
     };
@@ -43,7 +43,7 @@ function convertAxeResultsToStream(axeResults) {
         if (!nodeMap.has(key)) {
             const nodeId = nodeIdCounter++;
             nodeMap.set(key, nodeId);
-            streamData.nodes.push({ 
+            equalifySchemaData.nodes.push({ 
                 nodeId, 
                 html, 
                 targets, 
@@ -68,7 +68,7 @@ function convertAxeResultsToStream(axeResults) {
                 relatedNodeIds: [nodeId],
                 type: messageType
             };
-            streamData.messages.push(message);
+            equalifySchemaData.messages.push(message);
             messageMap.set(key, message);
         } else {
             const existingMessage = messageMap.get(key);
@@ -95,9 +95,9 @@ function convertAxeResultsToStream(axeResults) {
                 });
 
                 const nodeId = getOrCreateNodeId(node.html, targets); 
-                const nodeInStream = streamData.nodes.find(n => n.nodeId === nodeId);
-                if (nodeInStream) {
-                    nodeInStream.equalified = (messageType === 'pass');
+                const nodeInEqualifySchema = equalifySchemaData.nodes.find(n => n.nodeId === nodeId);
+                if (nodeInEqualifySchema) {
+                    nodeInEqualifySchema.equalified = (messageType === 'pass');
                 }
             });
         });
@@ -113,7 +113,7 @@ function convertAxeResultsToStream(axeResults) {
         processIssues(axeResults.results.passes, 'pass');
     }
 
-    return streamData;
+    return equalifySchemaData;
 }
 
-module.exports = convertAxeResultsToStream;
+module.exports = convertAxeResultsToEqualifySchema;

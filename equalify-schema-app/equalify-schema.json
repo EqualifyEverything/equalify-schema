@@ -1,12 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "STREAM Schema",
+  "title": "Equalify Schema",
   "type": "object",
   "properties": {
-    "source": {
-      "type": "string",
-      "enum": ["scan", "extension", "manual"]
-    },
     "urls": {
       "type": "array",
       "items": {
@@ -66,5 +62,5 @@
       }
     }
   },
-  "required": ["messages", "tags", "nodes", "urls", "source"]
+  "required": ["messages", "tags", "nodes", "urls"]
 }
