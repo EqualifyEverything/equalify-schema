@@ -32,7 +32,7 @@
             "type": "array",
             "items": { "type": "integer" }
           },
-          "type": { "type": "string", "enum": ["pass", "error", "violation"] }
+          "type": { "type": "string", "enum": ["pass", "incomplete", "violation", "warning"] }
         },
         "required": ["message", "relatedTagIds", "relatedNodeIds", "type"]
       }
