@@ -5,7 +5,7 @@ function convertAxeResultsToEqualifySchema(axeResults) {
 
     const nodeMap = new Map();
     const messageMap = new Map();
-    const tagMap = new Map(); 
+    const tagMap = new Map();
 
     const equalifySchemaData = {
         urls: [{ urlId: 1, url: axeResults.results.url }], // This script only converts one url
@@ -21,7 +21,7 @@ function convertAxeResultsToEqualifySchema(axeResults) {
         }
         if (!messageTagId) {
             const messageTag = 'axe-core Message';
-            messageTagId = getOrCreateTagId(messageTag); 
+            messageTagId = getOrCreateTagId(messageTag);
         }
     };
 
@@ -54,18 +54,21 @@ function convertAxeResultsToEqualifySchema(axeResults) {
         return nodeMap.get(key);
     };
 
-    const addOrUpdateMessage = (messageText, messageType, isRule, html, targets, additionalTags = []) => {
+    const addOrUpdateMessage = (messageText, messageType, isRule, html, targets, relatedHtmls, additionalTags = []) => {
         const nodeId = getOrCreateNodeId(html, targets);
         const key = `${messageText}::${messageType}`;
         const tagIds = [isRule ? ruleTagId : messageTagId].concat(
             additionalTags.map(tag => getOrCreateTagId(tag))
         );
 
+        // Process related nodes
+        const relatedNodeIds = relatedHtmls.map(relatedHtml => getOrCreateNodeId(relatedHtml, targets));
+
         if (!messageMap.has(key)) {
             const message = {
                 message: messageText,
                 relatedTagIds: tagIds,
-                relatedNodeIds: [nodeId],
+                relatedNodeIds: [nodeId, ...relatedNodeIds],
                 type: messageType
             };
             equalifySchemaData.messages.push(message);
@@ -75,6 +78,11 @@ function convertAxeResultsToEqualifySchema(axeResults) {
             if (!existingMessage.relatedNodeIds.includes(nodeId)) {
                 existingMessage.relatedNodeIds.push(nodeId);
             }
+            relatedNodeIds.forEach(rNodeId => {
+                if (!existingMessage.relatedNodeIds.includes(rNodeId)) {
+                    existingMessage.relatedNodeIds.push(rNodeId);
+                }
+            });
         }
     };
 
@@ -87,11 +95,15 @@ function convertAxeResultsToEqualifySchema(axeResults) {
 
             issue.nodes.forEach(node => {
                 const targets = node.target || [];
-                addOrUpdateMessage(ruleMessageText, messageType, true, node.html, targets, issue.tags);
+                const relatedHtmls = node.any.flatMap(detail => 
+                    detail.relatedNodes ? detail.relatedNodes.map(rNode => rNode.html) : []
+                );
+
+                addOrUpdateMessage(ruleMessageText, messageType, true, node.html, targets, relatedHtmls, issue.tags);
 
                 node.any.forEach(detail => {
                     const detailMessageText = detail.message;
-                    addOrUpdateMessage(detailMessageText, messageType, false, node.html, targets, issue.tags);
+                    addOrUpdateMessage(detailMessageText, messageType, false, node.html, targets, relatedHtmls, issue.tags);
                 });
 
                 const nodeId = getOrCreateNodeId(node.html, targets); 
