@@ -7,7 +7,7 @@ Accessibility test results are formatted in lots of different ways. That means w
 ## Our Solution
 Equalify Schema standardizes accessibility test results into a format that's both human-readable and comprehensive, making it easier to identify and rectify accessibility issues.
 
-Equalify and participating devs are developing [equalify-schema.json](https://github.com/EqualifyEverything/Equalify Schema/blob/main/equalify-schema/equalify-schema.json) to standardize how results are reported.
+Equalify and participating devs are developing [equalify-schema.json](https://github.com/EqualifyEverything/equalify-schema/blob/main/equalify-schema-app/equalify-schema.json) to standardize how results are reported.
 
 ## Key Benefits
 - **Reduced File Size**: The Equalify Schema reformats complex data into a simple structure that reduces redundancy.
